@@ -19,7 +19,8 @@
   },
   "homepage": "https://github.com/zhuangdaz/appsyncmasterclass-backend#readme",
   "devDependencies": {
-    "serverless": "^2.4.0",
-    "serverless-appsync-plugin": "^1.4.0"
+    "serverless": "2.4.0",
+    "serverless-appsync-plugin": "^1.4.0",
+    "serverless-iam-roles-per-function": "^2.0.2"
   }
 }
