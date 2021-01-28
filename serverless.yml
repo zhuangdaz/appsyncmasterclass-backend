@@ -9,6 +9,9 @@ provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
+  environment:
+    STAGE: ${self:custom.stage}
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1"
 
 package:
   exclude:
@@ -25,6 +28,10 @@ functions:
     handler: functions/confirm-user-signup.handler
     environment:
       USERS_TABLE: !Ref UsersTable
+    iamRoleStatements:
+      - Effect: Allow
+        Action: dynamodb:PutItem
+        Resource: !GetAtt UsersTable.Arn
 
 resources:
   Resources:
@@ -63,7 +70,17 @@ resources:
             Name: name
             Required: false
             Mutable: true
+        LambdaConfig:
+          PostConfirmation: !GetAtt ConfirmUserSignupLambdaFunction.Arn
     
+    UserPoolInvokeConfirmUserSignupLambdaPermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        Action: lambda:invokeFunction
+        FunctionName: !Ref ConfirmUserSignupLambdaFunction
+        Principal: cognito-idp.amazonaws.com
+        SourceArn: !GetAtt CognitoUserPool.Arn
+
     WebUserPoolClient:
       Type: AWS::Cognito::UserPoolClient
       Properties:
