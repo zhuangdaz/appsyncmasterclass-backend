@@ -100,3 +100,7 @@ resources:
 
     CognitoUserPoolId:
       Value: !Ref CognitoUserPool
+
+    WebUserPoolClientId:
+      Value: !Ref WebUserPoolClient
+
