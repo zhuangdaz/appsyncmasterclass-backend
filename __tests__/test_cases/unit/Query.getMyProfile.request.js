@@ -6,8 +6,8 @@ const path = require('path')
 describe('Query.getMyProfile.request template', () => {
   it("should use userName as 'id'", () => {
     const templatePath = path.resolve(__dirname, '../../../mapping-templates/Query.getMyProfile.request.vtl')
-    const userName = chance.guid()
-    const context = given.an_appsync_context({ userName }, {})
+    const username = chance.guid()
+    const context = given.an_appsync_context({ username }, {})
     const result = when.we_invoke_an_appSync_template(templatePath, context)
 
     expect(result).toEqual({
@@ -15,7 +15,7 @@ describe('Query.getMyProfile.request template', () => {
       "operation": "GetItem",
       "key": {
         "id": {
-          "S": userName
+          "S": username
         }
       }
     })
