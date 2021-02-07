@@ -1,0 +1,26 @@
+{
+  "version" : "2018-05-29",
+  "operation" : "UpdateItem",
+  "key": {
+      "id": $util.dynamodb.toDynamoDBJson($context.identity.username)
+  },
+  "update" : {
+    "expression" : "set #name = :name, imageURL = :imageURL, backgroundImageURL = :backgroundImageURL, bio = :bio, #location = :location, website = :website, birthDate = :birthDate"
+    "expressionNames" : {
+      "#name" : "name",
+      "#location": "location"
+    },
+    "expressionValues" : {
+      ":name" : $util.dynamodb.toDynamoDBJson($context.arguments.newProfile.name), 
+      ":imageURL" : $util.dynamodb.toDynamoDBJson($context.arguments.newProfile.imageURL), 
+      ":backgroundImageURL" : $util.dynamodb.toDynamoDBJson($context.arguments.newProfile.backgroundImageURL), 
+      ":bio" : $util.dynamodb.toDynamoDBJson($context.arguments.newProfile.bio), 
+      ":location" : $util.dynamodb.toDynamoDBJson($context.arguments.newProfile.location), 
+      ":website" : $util.dynamodb.toDynamoDBJson($context.arguments.newProfile.website), 
+      ":birthDate" : $util.dynamodb.toDynamoDBJson($context.arguments.newProfile.birthDate)
+    }
+  },
+  "condition" : {
+      "expression" : "attribute_exists(id)"
+  }
+}

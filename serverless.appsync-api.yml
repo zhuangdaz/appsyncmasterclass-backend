@@ -10,6 +10,10 @@ mappingTemplates:
   - type: Query
     field: getMyProfile
     dataSource: usersTable
+
+  - type: Mutation
+    field: editMyProfile
+    dataSource: usersTable
     
 dataSources:
   - type: NONE
