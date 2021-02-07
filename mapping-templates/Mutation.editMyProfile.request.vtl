@@ -5,7 +5,7 @@
       "id": $util.dynamodb.toDynamoDBJson($context.identity.username)
   },
   "update" : {
-    "expression" : "set #name = :name, imageURL = :imageURL, backgroundImageURL = :backgroundImageURL, bio = :bio, #location = :location, website = :website, birthDate = :birthDate"
+    "expression" : "set #name = :name, imageURL = :imageURL, backgroundImageURL = :backgroundImageURL, bio = :bio, #location = :location, website = :website, birthDate = :birthDate",
     "expressionNames" : {
       "#name" : "name",
       "#location": "location"
