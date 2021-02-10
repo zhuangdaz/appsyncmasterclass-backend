@@ -12,7 +12,7 @@ mappingTemplates:
     dataSource: usersTable
 
   - type: Query
-    field: getImageUploadUrl
+    field: getImageUploadURL
     dataSource: getImageUploadUrlFunction
     request: false
     response: false

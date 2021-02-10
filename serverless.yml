@@ -126,9 +126,7 @@ resources:
               AllowedHeaders:
                 - '*'
 
-
   Outputs:
-    
     AwsRegion:
       Value: ${self:custom.region}
 
