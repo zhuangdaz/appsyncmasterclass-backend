@@ -148,11 +148,30 @@ const we_invoke_getImageUploadURL = async (username, extension, contentType) => 
     return await handler(event, context)
 }
 
+const a_user_calls_getImageUploadUrl = async(user, extension, contentType) => {
+    const getImageUploadURL = `query getImageUploadURL($extension: String, $contentType: String) {
+        getImageUploadURL(extension: $extension, contentType: $contentType)
+      }`
+
+    const variables = {
+        extension,
+        contentType
+    }
+
+    const data = await GraphQL(process.env.API_URL, getImageUploadURL, variables, user.accessToken)
+    const url = data.getImageUploadURL
+
+    console.log(`[${data}] - got data`)
+    console.log(`[${user.username}] - got image upload url`)
+    return url
+}
+
 module.exports = {
     we_invoke_confirmUserSignup,
     a_user_signs_up,
     we_invoke_an_appSync_template,
     a_user_calls_getMyProfile,
     a_user_calls_editMyProfile,
-    we_invoke_getImageUploadURL
+    we_invoke_getImageUploadURL,
+    a_user_calls_getImageUploadUrl
 }
