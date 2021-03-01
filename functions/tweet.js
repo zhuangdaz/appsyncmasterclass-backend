@@ -1,9 +1,9 @@
 const DynamoDB = require('aws-sdk/clients/dynamodb')
-const DocumentClient = new DynamoDB.DocumentClient()
+const docClient = new DynamoDB.DocumentClient()
 const ulid = require('ulid')
 const { TweetsType } = require('../lib/constants')
 
-const { USERS_TABLE_NAME, TWEETS_TABLE_NAME, TIMELINES_TABLE_NAME } = process.env
+const { USERS_TABLE, TWEETS_TABLE, TIMELINES_TABLE } = process.env
 
 // 1. create a new item in tweets_table
 // 2. create a new item to timelines_table
@@ -24,19 +24,19 @@ module.exports.handler = async(event) => {
     replies: 0,
     retweets: 0
   }
-  
-  await DocumentClient.transactWrite(
+
+  const request = docClient.transactWrite(
     {
       TransactItems: [
         {
           Put: {
-            TableName: TWEETS_TABLE_NAME,
+            TableName: TWEETS_TABLE,
             Item: newTweet
           }
         },
         {
           Put: {
-            TableName: TIMELINES_TABLE_NAME,
+            TableName: TIMELINES_TABLE,
             Item: {
               userId: username,
               tweetId: id,
@@ -46,7 +46,7 @@ module.exports.handler = async(event) => {
         },
         {
           Update: {
-            TableName: USERS_TABLE_NAME,
+            TableName: USERS_TABLE,
             Key: {
               id: username
             },
@@ -59,7 +59,15 @@ module.exports.handler = async(event) => {
         }
       ]
     }
-  ).promise()
+  )
 
+  request.on('extractError', (response) => {
+    if (response.error) {
+      const cancellationReasons = JSON.parse(response.httpResponse.body.toString()).CancellationReasons;
+      console.log(JSON.stringify(cancellationReasons))
+      response.error.cancellationReasons = cancellationReasons;
+    }
+  });
+  await request.promise();
   return newTweet
 }

@@ -16,14 +16,14 @@ const we_invoke_confirmUserSignup = async (userName, name, email) => {
         "userName": userName,
         "triggerSource": "PostConfirmation_ConfirmSignUp",
         "request": {
-        "userAttributes": {
-            "sub": userName,
-            "cognito:email_alias": email,
-            "cognito:user_status": "CONFIRMED",
-            "email_verified": "false",
-            "name": name,
-            "email": email
-        }
+            "userAttributes": {
+                "sub": userName,
+                "cognito:email_alias": email,
+                "cognito:user_status": "CONFIRMED",
+                "email_verified": "false",
+                "name": name,
+                "email": email
+            }
         },
         "response": {}
     }
@@ -166,6 +166,21 @@ const a_user_calls_getImageUploadUrl = async(user, extension, contentType) => {
     return url
 }
 
+const we_invoke_tweet = async (username, text) => {
+    const handler = require('../../functions/tweet').handler
+
+    const context = {}
+    const event = {
+        identity: {
+            username
+        },
+        arguments: {
+            text
+        }
+    }
+    return await handler(event, context)
+}
+
 module.exports = {
     we_invoke_confirmUserSignup,
     a_user_signs_up,
@@ -173,5 +188,6 @@ module.exports = {
     a_user_calls_getMyProfile,
     a_user_calls_editMyProfile,
     we_invoke_getImageUploadURL,
-    a_user_calls_getImageUploadUrl
+    a_user_calls_getImageUploadUrl,
+    we_invoke_tweet
 }
