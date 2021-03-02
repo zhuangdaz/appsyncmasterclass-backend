@@ -100,6 +100,29 @@ const a_user_calls_getMyProfile = async (user) => {
     return profile
 }
 
+const a_user_calls_tweet = async (user, text) => {
+    const tweet = `mutation MyMutation($text: String!) {
+        tweet(text: $text) {
+            id
+            createdAt
+            text
+            likes
+            replies
+            retweets
+        }
+    }`
+
+    const variables = {
+        text
+    }
+
+    const data = await GraphQL(process.env.API_URL, tweet, variables, user.accessToken)
+    const newTweet = data.tweet
+
+    console.log(`[${user.username}] - posted tweet`)
+    return newTweet
+}
+
 const a_user_calls_editMyProfile = async(user, input) => {
     const editMyProfile = `mutation MyMutation($input: ProfileInput!) {
         editMyProfile(newProfile: $input) {
@@ -161,7 +184,6 @@ const a_user_calls_getImageUploadUrl = async(user, extension, contentType) => {
     const data = await GraphQL(process.env.API_URL, getImageUploadURL, variables, user.accessToken)
     const url = data.getImageUploadURL
 
-    console.log(`[${data}] - got data`)
     console.log(`[${user.username}] - got image upload url`)
     return url
 }
@@ -189,5 +211,6 @@ module.exports = {
     a_user_calls_editMyProfile,
     we_invoke_getImageUploadURL,
     a_user_calls_getImageUploadUrl,
-    we_invoke_tweet
+    we_invoke_tweet,
+    a_user_calls_tweet
 }
