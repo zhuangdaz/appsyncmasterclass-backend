@@ -4,7 +4,7 @@ const chance = require('chance').Chance()
 const path = require('path')
 
 describe('Query.getTweets.response template', () => {
-  it("should return MyProfile for current user", () => {
+  it("should return error when the limit is over 25", () => {
     const templatePath = path.resolve(__dirname, '../../../mapping-templates/Query.getTweets.request.vtl')
     const username = chance.guid()
     const context = given.an_appsync_context({}, { userId: username, nextToken: null, limit: 26 })

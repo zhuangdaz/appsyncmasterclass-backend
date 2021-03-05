@@ -105,6 +105,11 @@ const a_user_calls_tweet = async (user, text) => {
         tweet(text: $text) {
             id
             createdAt
+            profile {
+                id
+                name
+                screenName
+            }
             text
             likes
             replies
@@ -121,6 +126,41 @@ const a_user_calls_tweet = async (user, text) => {
 
     console.log(`[${user.username}] - posted tweet`)
     return newTweet
+}
+
+const a_user_calls_getTweets = async (user, userId, limit, nextToken) => {
+    const getTweets = `query getTweets($userId: ID!, $limit: Int!, $nextToken: String) {
+        getTweets(userId: $userId, limit: $limit, nextToken: $nextToken) {
+            tweets {
+                id
+                createdAt
+                profile {
+                    id
+                    name
+                    screenName
+                }
+                ... on Tweet {
+                    likes
+                    replies
+                    retweets
+                    text
+                }
+            }
+            nextToken
+        }
+    }`
+
+    const variables = {
+        userId,
+        limit,
+        nextToken
+    }
+
+    const data = await GraphQL(process.env.API_URL, getTweets, variables, user.accessToken)
+    const tweets = data.getTweets
+
+    console.log(`[${user.username}] - gets tweets`)
+    return tweets
 }
 
 const a_user_calls_editMyProfile = async(user, input) => {
@@ -212,5 +252,6 @@ module.exports = {
     we_invoke_getImageUploadURL,
     a_user_calls_getImageUploadUrl,
     we_invoke_tweet,
-    a_user_calls_tweet
+    a_user_calls_tweet,
+    a_user_calls_getTweets
 }
