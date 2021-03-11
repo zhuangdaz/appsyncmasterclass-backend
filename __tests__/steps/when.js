@@ -70,6 +70,7 @@ const we_invoke_an_appSync_template = (templatePath, context) => {
         valueMapper: velocityMapper.map,
         escape: false
     })
+
     return JSON.parse(compiler.render(context))
 }
 

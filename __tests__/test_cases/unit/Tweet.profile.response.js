@@ -3,7 +3,7 @@ const when = require('../../steps/when')
 const chance = require('chance').Chance()
 const path = require('path')
 
-describe('Tweet.profile.request template', () => {
+describe('Tweet.profile.response template', () => {
   it("should return MyProfile for current user", () => {
     const templatePath = path.resolve(__dirname, '../../../mapping-templates/Tweet.profile.response.vtl')
     const username = chance.guid()
