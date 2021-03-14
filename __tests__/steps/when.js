@@ -328,6 +328,29 @@ const a_user_calls_unlike = async (user, tweetId) => {
     return result
 }
 
+const a_user_calls_getLikes = async (user, userId, limit, nextToken) => {
+    const getLikes = `query getLikes($userId: ID!, $limit: Int!, $nextToken: String) {
+        getLikes(userId: $userId, limit: $limit, nextToken: $nextToken) {
+            tweets {
+                ... iTweetFields
+            }
+            nextToken
+        }
+    }`
+
+    const variables = {
+        userId,
+        limit,
+        nextToken
+    }
+
+    const data = await GraphQL(process.env.API_URL, getLikes, variables, user.accessToken)
+    const result = data.getLikes
+
+    console.log(`[${user.username}] - fetched [${userId}]'s liked tweets`)
+    return result
+}
+
 module.exports = {
     we_invoke_confirmUserSignup,
     a_user_signs_up,
@@ -341,5 +364,6 @@ module.exports = {
     a_user_calls_getTweets,
     a_user_calls_getMyTimeline,
     a_user_calls_like,
-    a_user_calls_unlike
+    a_user_calls_unlike,
+    a_user_calls_getLikes
 }
