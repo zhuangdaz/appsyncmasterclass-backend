@@ -32,7 +32,7 @@ mappingTemplates:
     response: false
   - type: Mutation
     field: like
-    dataSource: likesTable
+    dataSource: likeMutation
 
   # Nested fields
   - type: Tweet
@@ -62,18 +62,18 @@ dataSources:
     config:
       tableName: !Ref LikesTable
   - type: AMAZON_DYNAMODB
-    name: likesMutation
+    name: likeMutation
     config:
       tableName: !Ref LikesTable
       iamRoleStatements:
         - Effect: Allow
           Action: dynamodb:PutItem
-          Resource: !GetAtt LikesTable:Arn
+          Resource: !GetAtt LikesTable.Arn
         - Effect: Allow
           Action: dynamodb:UpdateItem
           Resource: 
-            - !GetAtt TweetsTable:Arn
-            - !GetAtt UsersTable:Arn
+            - !GetAtt UsersTable.Arn
+            - !GetAtt TweetsTable.Arn
   - type: AWS_LAMBDA
     name: getImageUploadUrlFunction
     config:
