@@ -27,7 +27,11 @@ describe('Given an authenticated user', () => {
       followersCount: 0,
       followingCount: 0,
       tweetsCount: 0,
-      likesCount: 0
+      likesCount: 0,
+      tweets: {
+        nextToken: null,
+        tweets: []
+      }
     })
 
     const [firstName, lastName] = user.name.split(" ")
