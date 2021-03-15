@@ -3,7 +3,7 @@ const docClient = new DynamoDB.DocumentClient()
 const ulid = require('ulid')
 const { TweetsType } = require('../lib/constants')
 
-const { USERS_TABLE, TWEETS_TABLE, TIMELINES_TABLE, RETWEET_TABLE } = process.env
+const { USERS_TABLE, TWEETS_TABLE, TIMELINES_TABLE, RETWEETS_TABLE } = process.env
 
 // 1. create a new item in tweets_table, retweets_table
 // 2. create a new item to timelines_table if it is a retweet of other's tweet
