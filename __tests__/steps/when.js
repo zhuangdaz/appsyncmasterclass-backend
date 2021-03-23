@@ -287,6 +287,21 @@ const we_invoke_tweet = async (username, text) => {
     return await handler(event, context)
 }
 
+const we_invoke_retweet = async (username, tweetId) => {
+    const handler = require('../../functions/retweet').handler
+
+    const context = {}
+    const event = {
+        identity: {
+            username
+        },
+        arguments: {
+            tweetId
+        }
+    }
+    return await handler(event, context)
+}
+
 const a_user_calls_getMyTimeline = async (user, limit, nextToken) => {
     const getMyTimeline = `query getMyTimeline($limit: Int!, $nextToken: String) {
         getMyTimeline(limit: $limit, nextToken: $nextToken) {
@@ -366,13 +381,14 @@ const a_user_calls_getLikes = async (user, userId, limit, nextToken) => {
 
 module.exports = {
     we_invoke_confirmUserSignup,
-    a_user_signs_up,
+    we_invoke_tweet,
     we_invoke_an_appSync_template,
+    we_invoke_getImageUploadURL,
+    we_invoke_retweet,
+    a_user_signs_up,
     a_user_calls_getMyProfile,
     a_user_calls_editMyProfile,
-    we_invoke_getImageUploadURL,
     a_user_calls_getImageUploadUrl,
-    we_invoke_tweet,
     a_user_calls_tweet,
     a_user_calls_getTweets,
     a_user_calls_getMyTimeline,

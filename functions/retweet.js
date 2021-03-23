@@ -47,7 +47,7 @@ module.exports.handler = async(event) => {
         TableName: RETWEETS_TABLE,
         Item: {
           userId: username,
-          tweetId: id,
+          tweetId,
           createdAt: timestamp
         },
         ConditionExpression: 'attribute_not_exists(tweetId)'
