@@ -60,6 +60,11 @@ mappingTemplates:
   - type: Tweet
     field: liked
     dataSource: likesTable
+  - type: Tweet
+    field: retweeted
+    dataSource: retweetsTable
+    request: Tweet.liked.request.vtl
+    response: Tweet.liked.response.vtl
   - type: UnhydratedTweetsPage
     field: tweets
     dataSource: tweetsTable
@@ -92,6 +97,10 @@ dataSources:
     name: likesTable
     config:
       tableName: !Ref LikesTable
+  - type: AMAZON_DYNAMODB
+    name: retweetsTable
+    config:
+      tableName: !Ref RetweetsTable
   - type: AMAZON_DYNAMODB
     name: likeMutation
     config:

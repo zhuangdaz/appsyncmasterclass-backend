@@ -118,7 +118,7 @@ const there_are_N_tweets_in_TimelinesTable = async (userId, n) => {
     ExpressionAttributeValues: {
       ':userId': userId
     },
-    ScanIndexForward: false
+    ScanIndexForward: false   // reverse the index order so that later tweet shows up first
   }).promise()
 
   expect(resp.Items).toHaveLength(n)
