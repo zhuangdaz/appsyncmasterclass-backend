@@ -117,7 +117,8 @@ const there_are_N_tweets_in_TimelinesTable = async (userId, n) => {
     KeyConditionExpression: 'userId = :userId',
     ExpressionAttributeValues: {
       ':userId': userId
-    }
+    },
+    ScanIndexForward: false
   }).promise()
 
   expect(resp.Items).toHaveLength(n)
