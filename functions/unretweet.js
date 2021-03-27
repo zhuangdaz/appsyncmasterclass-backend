@@ -1,8 +1,6 @@
 const _ = require('lodash')
 const DynamoDB = require('aws-sdk/clients/dynamodb')
 const docClient = new DynamoDB.DocumentClient()
-const ulid = require('ulid')
-const { TweetsType } = require('../lib/constants')
 
 const { USERS_TABLE, TWEETS_TABLE, TIMELINES_TABLE, RETWEETS_TABLE } = process.env
 
