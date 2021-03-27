@@ -101,12 +101,10 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action: dynamodb:GetItem
-        Resource: 
-          - !GetAtt TweetsTable.Arn
+        Resource: !GetAtt TweetsTable.Arn
       - Effect: Allow
         Action: dynamodb:Query
-        Resource: 
-          - !GetAtt TweetsTable.Arn
+        Resource: !Sub "${TweetsTable.Arn}/index/retweetsByCreator"
       - Effect: Allow
         Action: dynamodb:UpdateItem
         Resource: 
