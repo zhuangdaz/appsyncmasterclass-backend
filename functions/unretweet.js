@@ -21,7 +21,7 @@ module.exports.handler = async(event) => {
     throw new Error("Tweet is not found")
   }
 
-  const queryResp = await DynamoDB.query({
+  const queryResp = await docClient.query({
     TableName: process.env.TWEETS_TABLE,
     IndexName: 'retweetsByCreator',
     KeyConditionExpression: 'creator = :creator AND retweetOf = :tweetId',
@@ -51,11 +51,11 @@ module.exports.handler = async(event) => {
     {
       Delete: {
         TableName: RETWEETS_TABLE,
-        Item: {
+        Key: {
           userId: username,
           tweetId
         },
-        ConditionExpression: 'attribute_not_exists(tweetId)'
+        ConditionExpression: 'attribute_exists(tweetId)'
       }
     },
     {
@@ -91,10 +91,11 @@ module.exports.handler = async(event) => {
     transactionItems.push({
       Delete: {
         TableName: TIMELINES_TABLE,
-        Item: {
+        Key: {
           userId: username,
           tweetId: retweet.id
-        }
+        },
+        ConditionExpression: "attribute_exists(tweetId)"
       }
     })
   }

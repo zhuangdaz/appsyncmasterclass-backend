@@ -335,6 +335,21 @@ const we_invoke_retweet = async (username, tweetId) => {
     return await handler(event, context)
 }
 
+const we_invoke_unretweet = async (username, tweetId) => {
+    const handler = require('../../functions/unretweet').handler
+
+    const context = {}
+    const event = {
+        identity: {
+            username
+        },
+        arguments: {
+            tweetId
+        }
+    }
+    return await handler(event, context)
+}
+
 const a_user_calls_getMyTimeline = async (user, limit, nextToken) => {
     const getMyTimeline = `query getMyTimeline($limit: Int!, $nextToken: String) {
         getMyTimeline(limit: $limit, nextToken: $nextToken) {
@@ -418,6 +433,7 @@ module.exports = {
     we_invoke_an_appSync_template,
     we_invoke_getImageUploadURL,
     we_invoke_retweet,
+    we_invoke_unretweet,
     a_user_signs_up,
     a_user_calls_getMyProfile,
     a_user_calls_editMyProfile,
