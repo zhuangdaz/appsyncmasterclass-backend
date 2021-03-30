@@ -224,6 +224,19 @@ const a_user_calls_retweet = async (user, tweetId) => {
     console.log(`[${user.username}] - retweeted tweet:[${tweetId}]`)
 }
 
+const a_user_calls_unretweet = async (user, tweetId) => {
+    const unretweet = `mutation MyMutation($tweetId: ID!) {
+        unretweet(tweetId: $tweetId)
+    }`
+
+    const variables = {
+        tweetId
+    }
+
+    await GraphQL(process.env.API_URL, unretweet, variables, user.accessToken)
+    console.log(`[${user.username}] - unretweeted tweet:[${tweetId}]`)
+}
+
 const a_user_calls_getTweets = async (user, userId, limit, nextToken) => {
     const getTweets = `query getTweets($userId: ID!, $limit: Int!, $nextToken: String) {
         getTweets(userId: $userId, limit: $limit, nextToken: $nextToken) {
@@ -440,6 +453,7 @@ module.exports = {
     a_user_calls_getImageUploadUrl,
     a_user_calls_tweet,
     a_user_calls_retweet,
+    a_user_calls_unretweet,
     a_user_calls_getTweets,
     a_user_calls_getMyTimeline,
     a_user_calls_like,
