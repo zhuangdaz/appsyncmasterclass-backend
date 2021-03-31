@@ -126,8 +126,7 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action: dynamodb:GetItem
-        Resource: 
-          - !GetAtt TweetsTable.Arn
+        Resource: !GetAtt TweetsTable.Arn
       - Effect: Allow
         Action: dynamodb:UpdateItem
         Resource: 
@@ -171,6 +170,8 @@ resources:
             AttributeType: S
           - AttributeName: retweetOf
             AttributeType: S
+          - AttributeName: inReplyToTweetId
+            AttributeType: S
         GlobalSecondaryIndexes:
           - IndexName: byCreator
             KeySchema:
@@ -185,6 +186,14 @@ resources:
               - AttributeName: creator
                 KeyType: HASH
               - AttributeName: retweetOf
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+          - IndexName: repliesForTweet
+            KeySchema:
+              - AttributeName: inReplyToTweetId
+                KeyType: HASH
+              - AttributeName: id
                 KeyType: RANGE
             Projection:
               ProjectionType: ALL

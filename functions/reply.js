@@ -13,7 +13,7 @@ module.exports.handler = async(event) => {
   const id = ulid.ulid()
   const timestamp = new Date().toJSON()
 
-  const tweet = getTweetById(tweetId)
+  const tweet = await getTweetById(tweetId)
   if (!tweet) {
     throw new Error("Tweet is not found")
   }
@@ -56,7 +56,7 @@ module.exports.handler = async(event) => {
       Update: {
         TableName: TWEETS_TABLE,
         Key: {
-          id: tweet.id
+          id: tweetId
         },
         UpdateExpression: 'Add replies :one',
         ExpressionAttributeValues: {
@@ -79,10 +79,20 @@ module.exports.handler = async(event) => {
     }
   ]
 
-  await docClient.transactWrite({
+  const request = docClient.transactWrite(
+    {
       TransactItems: transactionItems
-  }).promise();
+    }
+  )
 
+  request.on('extractError', (response) => {
+    if (response.error) {
+      const cancellationReasons = JSON.parse(response.httpResponse.body.toString()).CancellationReasons;
+      console.log(JSON.stringify(cancellationReasons))
+      response.error.cancellationReasons = cancellationReasons;
+    }
+  });
+  await request.promise();
   return true
 }
 
