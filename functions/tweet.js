@@ -1,7 +1,7 @@
 const DynamoDB = require('aws-sdk/clients/dynamodb')
 const docClient = new DynamoDB.DocumentClient()
 const ulid = require('ulid')
-const { TweetsType } = require('../lib/constants')
+const { TweetTypes } = require('../lib/constants')
 
 const { USERS_TABLE, TWEETS_TABLE, TIMELINES_TABLE } = process.env
 
@@ -15,7 +15,7 @@ module.exports.handler = async(event) => {
   const timestamp = new Date().toJSON()
 
   const newTweet = {
-    __typename: TweetsType.TWEET,
+    __typename: TweetTypes.TWEET,
     id,
     text,
     creator: username,

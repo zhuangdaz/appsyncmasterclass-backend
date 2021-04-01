@@ -2,7 +2,7 @@ const _ = require('lodash')
 const DynamoDB = require('aws-sdk/clients/dynamodb')
 const docClient = new DynamoDB.DocumentClient()
 const ulid = require('ulid')
-const { TweetsType } = require('../lib/constants')
+const { TweetTypes } = require('../lib/constants')
 const { getTweetById } = require('../lib/tweets')
 
 const { USERS_TABLE, TWEETS_TABLE, TIMELINES_TABLE } = process.env
@@ -20,7 +20,7 @@ module.exports.handler = async(event) => {
 
   const inReplyToUserIds = await getInReplyToUserIds(tweet)
   const newTweet = {
-    __typename: TweetsType.REPLY,
+    __typename: TweetTypes.REPLY,
     id,
     creator: username,
     createdAt: timestamp,
@@ -88,19 +88,19 @@ module.exports.handler = async(event) => {
   request.on('extractError', (response) => {
     if (response.error) {
       const cancellationReasons = JSON.parse(response.httpResponse.body.toString()).CancellationReasons;
-      console.log(JSON.stringify(cancellationReasons))
+      console.log(`Transaction Errors: [${JSON.stringify(cancellationReasons)}]`)
       response.error.cancellationReasons = cancellationReasons;
     }
   });
-  await request.promise();
+  await request.promise()
   return true
 }
 
 async function getInReplyToUserIds(tweet) {
   let userIds = [tweet.creator]
-  if (tweet.__typename === TweetsType.REPLY) {
+  if (tweet.__typename === TweetTypes.REPLY) {
     userIds = userIds.concat(tweet.inReplyToUserIds)
-  } else if (tweet.__typename === TweetsType.RETWEET) {
+  } else if (tweet.__typename === TweetTypes.RETWEET) {
     let originalTweet = await getTweetById(tweet.retweetOf)
     userIds = userIds.concat(await getInReplyToUserIds(originalTweet))
   }

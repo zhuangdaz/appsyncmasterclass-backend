@@ -25,7 +25,7 @@ describe("Given two authenticated users, userA and userB", () => {
         })
   
         it("Saves the reply to TweetsTable", async () => {
-          const reply = await then.reply_exists_in_TweetsTable(userA.username, tweet.id)
+          const reply = await then.reply_exists_in_TweetsTable(userB.username, tweet.id)
           expect(reply).toMatchObject({
             inReplyToTweetId: tweet.id,
             inReplyToUserIds: [userA.username],
@@ -55,7 +55,7 @@ describe("Given two authenticated users, userA and userB", () => {
           let userBsReply
           const replyText = chance.string({ length: 16 })
           beforeAll(async () => {
-            userBsReply = then.reply_exists_in_TweetsTable(userB.username, tweet.id)
+            userBsReply = await then.reply_exists_in_TweetsTable(userB.username, tweet.id)
             await when.we_invoke_reply(userA.username, userBsReply.id, replyText)
           })
 
@@ -78,7 +78,7 @@ describe("Given two authenticated users, userA and userB", () => {
         let userBsRetweet
         beforeAll(async () => {
           await when.we_invoke_retweet(userB.username, tweet.id)
-          userBsRetweet = then.retweet_exists_in_TweetsTable(userB.username, tweet.id)
+          userBsRetweet = await then.retweet_exists_in_TweetsTable(userB.username, tweet.id)
         })
 
         describe("When userA replies to userB's retweet", () => {
@@ -102,5 +102,4 @@ describe("Given two authenticated users, userA and userB", () => {
         })
       })
     })
-
 })
