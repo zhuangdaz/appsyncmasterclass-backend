@@ -7,7 +7,7 @@
 #if ($context.info.selectionSetList.size() == 1 && $context.info.selectionSetList[0] == "id")
     #foreach ($id in $context.source.inReplyToUserIds)
         #set ($user = { "id": "$id" })
-        #if ($$id == $context.identity.username)
+        #if ($id == $context.identity.username)
             #set ($user["__typename"] = "MyProfile")
         #else
             #set ($user["__typename"] = "OtherProfile")

@@ -20,7 +20,7 @@ describe('Tweet.profile.request template', () => {
             "S": username
           }
       }
-  })
+    })
   })
 
   it("should return MyProfile and id for current user if only asking for id", () => {
@@ -31,7 +31,6 @@ describe('Tweet.profile.request template', () => {
     }
     const context = given.an_appsync_context({ username }, {}, {}, { creator: username }, info)
     const result = when.we_invoke_an_appSync_template(templatePath, context)
-    console.log(`result: [${JSON.stringify(result)}]`)
     expect(result).toEqual({
       id: username,
       "__typename": "MyProfile"
