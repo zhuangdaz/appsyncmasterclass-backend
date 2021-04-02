@@ -102,7 +102,7 @@ mappingTemplates:
     request: MyProfile.tweets.request.vtl
     response: MyProfile.tweets.response.vtl
   - type: Reply
-    field: inReplyToTweetId
+    field: inReplyToTweet
     dataSource: tweetsTable
   - type: Reply
     field: inReplyToUsers

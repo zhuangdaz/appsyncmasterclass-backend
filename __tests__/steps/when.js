@@ -85,6 +85,38 @@ fragment retweetFields on Retweet {
 }
 `
 
+const replyFragment = `
+fragment replyFields on Reply {
+    id
+    profile {
+        ... iProfileFields
+    }
+    createdAt
+    text
+    likes
+    replies
+    retweets
+    liked
+    retweeted
+    inReplyToTweet {
+        id
+        profile {
+            ... iProfileFields
+        }
+        createdAt
+        ... on Tweet {
+            replies
+        }
+        ... on Reply {
+            replies
+        }
+    }
+    inReplyToUsers {
+        ... iProfileFields
+    }
+}
+`
+
 const iTweetFragment = `
 fragment iTweetFields on ITweet {
     ... on Tweet {
@@ -92,6 +124,9 @@ fragment iTweetFields on ITweet {
     }
     ... on Retweet {
         ... retweetFields
+    }
+    ... on Reply {
+        ... replyFields
     }
 }
 `
@@ -101,6 +136,7 @@ registerFragment("otherProfileFields", otherProfileFragment)
 registerFragment("iProfileFields", iProfileFragment)
 registerFragment("tweetFields", tweetFragment)
 registerFragment("retweetFields", retweetFragment)
+registerFragment("replyFields", replyFragment)
 registerFragment("iTweetFields", iTweetFragment)
 
 const we_invoke_confirmUserSignup = async (userName, name, email) => {
@@ -222,6 +258,22 @@ const a_user_calls_retweet = async (user, tweetId) => {
 
     await GraphQL(process.env.API_URL, retweet, variables, user.accessToken)
     console.log(`[${user.username}] - retweeted tweet:[${tweetId}]`)
+}
+
+const a_user_calls_reply = async (user, tweetId, text) => {
+    const reply = `mutation MyMutation($tweetId: ID!, $text: String!) {
+        reply(tweetId: $tweetId, text: $text) {
+            ... replyFields
+        }
+    }`
+
+    const variables = {
+        tweetId,
+        text
+    }
+
+    await GraphQL(process.env.API_URL, reply, variables, user.accessToken)
+    console.log(`[${user.username}] - replied to tweet:[${tweetId}]`)
 }
 
 const a_user_calls_unretweet = async (user, tweetId) => {
@@ -475,5 +527,6 @@ module.exports = {
     a_user_calls_getMyTimeline,
     a_user_calls_like,
     a_user_calls_unlike,
-    a_user_calls_getLikes
+    a_user_calls_getLikes,
+    a_user_calls_reply
 }

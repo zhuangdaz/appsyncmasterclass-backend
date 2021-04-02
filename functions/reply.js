@@ -93,7 +93,7 @@ module.exports.handler = async(event) => {
     }
   });
   await request.promise()
-  return true
+  return newTweet
 }
 
 async function getInReplyToUserIds(tweet) {

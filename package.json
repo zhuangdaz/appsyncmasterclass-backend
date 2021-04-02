@@ -9,7 +9,7 @@
     "exportEnv": "sls export-env && sls manifest",
     "integration-test": "jest --verbose ./__tests__/test_cases/integration --silent",
     "unit-test": "jest --verbose ./__tests__/test_cases/unit --silent",
-    "e2e-test": "jest --verbose ./__tests__/test_cases/e2e --silent"
+    "e2e-test": "jest --verbose ./__tests__/test_cases/e2e/reply.js --silent"
   },
   "repository": {
     "type": "git",
