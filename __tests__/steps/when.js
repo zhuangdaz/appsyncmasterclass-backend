@@ -249,15 +249,18 @@ const a_user_calls_tweet = async (user, text) => {
 
 const a_user_calls_retweet = async (user, tweetId) => {
     const retweet = `mutation MyMutation($tweetId: ID!) {
-        retweet(tweetId: $tweetId)
+        retweet(tweetId: $tweetId) {
+            ... retweetFields
+        }
     }`
 
     const variables = {
         tweetId
     }
 
-    await GraphQL(process.env.API_URL, retweet, variables, user.accessToken)
+    const data = await GraphQL(process.env.API_URL, retweet, variables, user.accessToken)
     console.log(`[${user.username}] - retweeted tweet:[${tweetId}]`)
+    return data.retweet
 }
 
 const a_user_calls_reply = async (user, tweetId, text) => {
@@ -272,8 +275,9 @@ const a_user_calls_reply = async (user, tweetId, text) => {
         text
     }
 
-    await GraphQL(process.env.API_URL, reply, variables, user.accessToken)
+    const data = await GraphQL(process.env.API_URL, reply, variables, user.accessToken)
     console.log(`[${user.username}] - replied to tweet:[${tweetId}]`)
+    return data.reply
 }
 
 const a_user_calls_unretweet = async (user, tweetId) => {
