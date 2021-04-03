@@ -88,6 +88,12 @@ mappingTemplates:
     dataSource: retweetsTable
     request: Tweet.liked.request.vtl
     response: Tweet.liked.response.vtl
+  - type: OtherProfile
+    field: following
+    dataSource: relationshipsTable
+  - type: OtherProfile
+    field: followedBy
+    dataSource: relationshipsTable
   - type: Reply
     field: liked
     dataSource: likesTable
