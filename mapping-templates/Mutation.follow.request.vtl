@@ -28,7 +28,7 @@
       "update": {
           "expression": "ADD followingCount :one",
           "expressionValues": {
-              ":bar": $util.dynamodb.toDynamoDBJson(1)
+              ":one": $util.dynamodb.toDynamoDBJson(1)
           }
       },
       "condition": {
@@ -44,7 +44,7 @@
       "update": {
           "expression": "ADD followersCount :one",
           "expressionValues": {
-              ":bar": $util.dynamodb.toDynamoDBJson(1)
+              ":one": $util.dynamodb.toDynamoDBJson(1)
           }
       },
       "condition": {
