@@ -150,6 +150,15 @@ resources:
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
+          - AttributeName: screenName
+            AttributeType: S
+        GlobalSecondaryIndexes:
+          - IndexName: byScreenName
+            KeySchema:
+              - AttributeName: screenName
+                KeyType: HASH
+            Projection:
+                ProjectionType: ALL
         Tags:
           - Key: Environment
             Value: ${self:custom.stage}
@@ -275,7 +284,7 @@ resources:
         AttributeDefinitions:
           - AttributeName: userId
             AttributeType: S
-          - AttributeName: tweetId
+          - AttributeName: sk
             AttributeType: S
           - AttributeName: otherUserId
             AttributeType: S
