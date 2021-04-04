@@ -1,4 +1,4 @@
-#set ($sk = 'FOLLOWS_' + $context.arguments.tweetId)
+#set ($sk = 'FOLLOWS_' + $context.arguments.userId)
 
 {
   "version": "2018-05-29",
@@ -12,7 +12,7 @@
         "sk": $util.dynamodb.toDynamoDBJson($sk)
       },
       "attributeValues": {
-        "otherUserId": $util.dynamodb.toDynamoDBJson($context.arguments.tweetId),
+        "otherUserId": $util.dynamodb.toDynamoDBJson($context.arguments.userId),
         "createdAt": $util.dynamodb.toDynamoDBJson($util.time.nowISO8601())
       },
       "condition": {
@@ -39,7 +39,7 @@
       "table":"${UsersTable}",
       "operation": "UpdateItem",
       "key": {
-        "id": $util.dynamodb.toDynamoDBJson($context.arguments.tweetId)
+        "id": $util.dynamodb.toDynamoDBJson($context.arguments.userId)
       },
       "update": {
           "expression": "ADD followersCount :one",

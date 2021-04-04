@@ -40,6 +40,8 @@ fragment otherProfileFields on OtherProfile {
     followingCount
     tweetsCount
     likesCount
+    following
+    followedBy
 }
 `
 
@@ -278,6 +280,35 @@ const a_user_calls_reply = async (user, tweetId, text) => {
     const data = await GraphQL(process.env.API_URL, reply, variables, user.accessToken)
     console.log(`[${user.username}] - replied to tweet:[${tweetId}]`)
     return data.reply
+}
+
+const a_user_calls_follow = async (user, userId) => {
+    const follow = `mutation MyMutation($userId: ID!) {
+        follow(userId: $userId)
+    }`
+
+    const variables = {
+        userId
+    }
+
+    await GraphQL(process.env.API_URL, follow, variables, user.accessToken)
+    console.log(`[${user.username}] - follows:[${userId}]`)
+}
+
+const a_user_calls_getProfile = async (user, screenName) => {
+    const getProfile = `query MyQuery($screenName: String!) {
+        getProfile(screenName: $screenName) {
+            ... otherProfileFields
+        }
+    }`
+
+    const variables = {
+        screenName
+    }
+
+    const data = await GraphQL(process.env.API_URL, getProfile, variables, user.accessToken)
+    console.log(`[${user.username}] - getProfile for :[${screenName}]`)
+    return data.getProfile
 }
 
 const a_user_calls_unretweet = async (user, tweetId) => {
@@ -532,5 +563,7 @@ module.exports = {
     a_user_calls_like,
     a_user_calls_unlike,
     a_user_calls_getLikes,
-    a_user_calls_reply
+    a_user_calls_reply,
+    a_user_calls_follow,
+    a_user_calls_getProfile
 }
