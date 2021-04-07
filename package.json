@@ -7,9 +7,9 @@
   "scripts": {
     "sls": "sls",
     "exportEnv": "sls export-env && sls manifest",
-    "integration-test": "jest --verbose ./__tests__/test_cases/integration/distribute-tweet.tests.js",
+    "integration-test": "jest --verbose ./__tests__/test_cases/integration --silent",
     "unit-test": "jest --verbose ./__tests__/test_cases/unit --silent",
-    "e2e-test": "jest --verbose ./__tests__/test_cases/e2e --silent"
+    "e2e-test": "jest --verbose ./__tests__/test_cases/e2e --silient"
   },
   "repository": {
     "type": "git",
@@ -26,6 +26,7 @@
     "@types/jest": "^26.0.20",
     "amplify-appsync-simulator": "^1.25.0",
     "amplify-velocity-template": "^1.4.2",
+    "async-retry": "^1.3.1",
     "aws-sdk": "^2.832.0",
     "axios": "^0.21.1",
     "dotenv": "^8.2.0",
