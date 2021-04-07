@@ -9,10 +9,12 @@ module.exports.handler = async(event) => {
     if (record.eventName === "INSERT") {
       const tweet = DynamoDB.Converter.unmarshall(record.dynamodb.NewImage)
       const followers = await getFollowers(tweet.creator)
+      console.log(`Found followers=[${followers}] for user=[${tweet.creator}]`)
       await distribute(tweet, followers)
     } else if (record.eventName === "REMOVE") {
       const tweet = DynamoDB.Converter.unmarshall(record.dynamodb.OldImage)
       const followers = await getFollowers(tweet.creator)
+      console.log(`Found followers=[${followers}] for user=[${tweet.creator}]`)
       await undistribute(tweet, followers)
     }
   }
@@ -20,11 +22,11 @@ module.exports.handler = async(event) => {
 
 async function getFollowers(userId) {
   const loop = async (acc, exclusiveStartKey) => {
-    const resp = DocumentClient.query({
+    const resp = await DocumentClient.query({
       TableName: RELATIONSHIPS_TABLE,
-      KeyConditionExpression: 'otherUserId = :userId and begin_with(sk, :follows)',
+      KeyConditionExpression: 'otherUserId = :otherUserId and begins_with(sk, :follows)',
       ExpressionAttributeValues: {
-        ':userId': userId,
+        ':otherUserId': userId,
         ':follows': 'FOLLOWS'
       },
       IndexName: 'byOtherUser',
@@ -73,7 +75,7 @@ async function distribute(tweet, followers) {
 async function undistribute(tweet, followers) {
   const timelineEntries = followers.map(userId => ({
     DeleteRequest: {
-      Item: {
+      Key: {
         userId,
         tweetId: tweet.id
       }

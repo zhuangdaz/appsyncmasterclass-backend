@@ -451,6 +451,13 @@ const we_invoke_reply = async (username, tweetId, text) => {
     return await handler(event, context)
 }
 
+const we_invoke_distribute_tweets = async (event) => {
+    const handler = require('../../functions/distribute-tweets').handler
+
+    const context = {}
+    return await handler(event, context)
+}
+
 const we_invoke_unretweet = async (username, tweetId) => {
     const handler = require('../../functions/unretweet').handler
 
@@ -551,6 +558,7 @@ module.exports = {
     we_invoke_retweet,
     we_invoke_unretweet,
     we_invoke_reply,
+    we_invoke_distribute_tweets,
     a_user_signs_up,
     a_user_calls_getMyProfile,
     a_user_calls_editMyProfile,
