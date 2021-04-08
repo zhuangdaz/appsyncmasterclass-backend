@@ -9,14 +9,14 @@ module.exports.handler = async(event) => {
   for (const record of event.Records) {
     if (record.eventName === "INSERT") {
       const relationship = DynamoDB.Converter.unmarshall(record.dynamodb.NewImage)
-      const [relType] = relationship.sp.split('_')
+      const [relType] = relationship.sk.split('_')
       if (relType === "FOLLOWS") {
         const tweets = await getTweets(relationship.otherUserId)
         await distribute(tweets, relationship.userId)
       }
     } else if (record.eventName === "REMOVE") {
-      const relationship = DynamoDB.Converter.unmarshall(record.dynamodb.NewImage)
-      const [relType] = relationship.sp.split('_')
+      const relationship = DynamoDB.Converter.unmarshall(record.dynamodb.OldImage)
+      const [relType] = relationship.sk.split('_')
       if (relType === "FOLLOWS") {
         const tweets = await getTimelineEntriesByDistributedFrom(relationship.userId, relationship.otherUserId)
         await undistribute(tweets, relationship.userId)
@@ -82,10 +82,10 @@ async function getTimelineEntriesByDistributedFrom(userId, distributedFrom) {
   const loop = async (acc, exclusiveStartKey) => {
     const resp = await DocumentClient.query({
       TableName: TIMELINES_TABLE,
-      KeyConditionExpression: 'userId = :userId and distirbutedFrom = :distirbutedFrom',
+      KeyConditionExpression: 'userId = :userId and distributedFrom = :distributedFrom',
       ExpressionAttributeValues: {
         ':userId': userId,
-        ':distirbutedFrom': distirbutedFrom
+        ':distributedFrom': distributedFrom
       },
       IndexName: 'byDistributedFrom',
       ExclusiveStartKey: exclusiveStartKey
