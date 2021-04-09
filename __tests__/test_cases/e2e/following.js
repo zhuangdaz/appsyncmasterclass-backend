@@ -6,16 +6,37 @@ const retry = require('async-retry')
 
 describe("Given authenticated users, userA and userB", () => {
   let userA, userB, userAsProfile, userBsProfile
+  let userBsTweet1, userBsTweet2
   beforeAll(async() => {
       userA = await given.an_authenticated_user()
       userB = await given.an_authenticated_user()
       userAsProfile = await when.a_user_calls_getMyProfile(userA)
       userBsProfile = await when.a_user_calls_getMyProfile(userB)
+      userBsTweet1 = await when.a_user_calls_tweet(userB, chance.paragraph())
+      userBsTweet2 = await when.a_user_calls_tweet(userB, chance.paragraph())
   })
 
   describe("When userA follows userB", () => {
     beforeAll(async () => {
       await when.a_user_calls_follow(userA, userB.username)
+    })
+
+    it("userA should see userB's tweets in his timeline", async() => {
+      await retry(async () => {
+        const { tweets } = await when.a_user_calls_getMyTimeline(userA, 25)
+        expect(tweets).toHaveLength(2)
+        expect(tweets).toEqual([
+          expect.objectContaining({
+            id: userBsTweet2.id
+          }),
+          expect.objectContaining({
+            id: userBsTweet1.id
+          })
+        ])
+      }, {
+        retries: 5,
+        maxTimeout: 1000
+      })
     })
 
     it("userA should see following as true when viewing userB's profile", async () => {
@@ -40,10 +61,10 @@ describe("Given authenticated users, userA and userB", () => {
       it("Should appear in userA's timeline", async() => {
         await retry(async () => {
           const { tweets } = await when.a_user_calls_getMyTimeline(userA, 25)
-          expect(tweets).toHaveLength(1)
+          expect(tweets).toHaveLength(3)
           expect(tweets[0].id).toEqual(tweet.id)
         }, {
-          retries: 3,
+          retries: 5,
           maxTimeout: 1000
         })
       })
@@ -77,10 +98,10 @@ describe("Given authenticated users, userA and userB", () => {
       it("Should appear in userB's timeline", async() => {
         await retry(async () => {
           const { tweets } = await when.a_user_calls_getMyTimeline(userB, 25)
-          expect(tweets).toHaveLength(2)
+          expect(tweets).toHaveLength(4)
           expect(tweets[0].id).toEqual(tweet.id)
         }, {
-          retries: 3,
+          retries: 5,
           maxTimeout: 1000
         })
       })
