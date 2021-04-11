@@ -295,6 +295,19 @@ const a_user_calls_follow = async (user, userId) => {
     console.log(`[${user.username}] - follows:[${userId}]`)
 }
 
+const a_user_calls_unfollow = async (user, userId) => {
+    const unfollow = `mutation MyMutation($userId: ID!) {
+        unfollow(userId: $userId)
+    }`
+
+    const variables = {
+        userId
+    }
+
+    await GraphQL(process.env.API_URL, unfollow, variables, user.accessToken)
+    console.log(`[${user.username}] - unfollows:[${userId}]`)
+}
+
 const a_user_calls_getProfile = async (user, screenName) => {
     const getProfile = `query MyQuery($screenName: String!) {
         getProfile(screenName: $screenName) {
@@ -581,5 +594,6 @@ module.exports = {
     a_user_calls_getLikes,
     a_user_calls_reply,
     a_user_calls_follow,
+    a_user_calls_unfollow,
     a_user_calls_getProfile
 }

@@ -107,4 +107,40 @@ describe("Given authenticated users, userA and userB", () => {
       })
     })
   })
+
+  describe("When userA unfollows userB", () => {
+    beforeAll(async () => {
+      await when.a_user_calls_unfollow(userA, userB.username)
+    })
+
+    it("userA shouldn't see userB's tweets in his timeline", async() => {
+      await retry(async () => {
+        const { tweets } = await when.a_user_calls_getMyTimeline(userA, 25)
+
+        expect(tweets).toHaveLength(1)
+        expect(tweets).toEqual([
+          expect.objectContaining({
+            profile: expect.objectContaining({
+              id: userA.username
+            })
+          })
+        ])
+      }, {
+        retries: 3,
+        maxTimeout: 1000
+      })
+    })
+
+    it("userA should see following as false when viewing userB's profile", async () => {
+      const { following, followedBy } = await when.a_user_calls_getProfile(userA, userBsProfile.screenName)
+      expect(following).toBe(false)
+      expect(followedBy).toBe(true)
+    })
+
+    it("userB should see followedBy as false when viewing userA's profile", async () => {
+      const { following, followedBy } = await when.a_user_calls_getProfile(userB, userAsProfile.screenName)
+      expect(following).toBe(true)
+      expect(followedBy).toBe(false)
+    })
+  })
 })
