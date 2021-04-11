@@ -161,9 +161,9 @@ functions:
   distributeTweetsToFollower:
     handler: functions/distribute-tweets-to-follower.handler
     environment:
-      RELATIONSHIPS_TABLE: !Ref TweetsTable
+      TWEETS_TABLE: !Ref TweetsTable
       TIMELINES_TABLE: !Ref TimelinesTable
-      MAX_TWEETS: 100
+      MAX_TWEETS: "100"
     events:
       - stream:
           type: dynamodb
@@ -178,10 +178,9 @@ functions:
         Resource: !GetAtt TimelinesTable.Arn
       - Effect: Allow
         Action: dynamodb:Query
-        Resource: !Sub "${TimelinesTable.Arn}/index/byDistributedFrom"
-      - Effect: Allow
-        Action: dynamodb:Query
-        Resource: !GetAtt TweetsTable.Arn
+        Resource: 
+          - !Sub "${TimelinesTable.Arn}/index/byDistributedFrom"
+          - !Sub "${TweetsTable.Arn}/index/byCreator"
 
 resources:
   Resources:

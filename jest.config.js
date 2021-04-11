@@ -1,6 +1,5 @@
 module.exports = {
     testEnvironment: 'node',
-    testMatch: ['**/__tests__/test_cases/**/*'],
-    testTimeout: 60000
+    testMatch: ['**/__tests__/test_cases/**/*']
 }
 

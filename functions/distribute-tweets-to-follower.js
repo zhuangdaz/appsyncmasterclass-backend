@@ -50,6 +50,32 @@ async function getTweets(userId) {
   return await loop([])
 }
 
+async function getTimelineEntriesByDistributedFrom(userId, distributedFrom) {
+  const loop = async (acc, exclusiveStartKey) => {
+    const resp = await DocumentClient.query({
+      TableName: TIMELINES_TABLE,
+      KeyConditionExpression: 'userId = :userId AND distributedFrom = :distributedFrom',
+      ExpressionAttributeValues: {
+        ':userId': userId,
+        ':distributedFrom': distributedFrom
+      },
+      IndexName: 'byDistributedFrom',
+      ExclusiveStartKey: exclusiveStartKey
+    }).promise()
+
+    const tweets = resp.Items || []
+    const newAcc = acc.concat(tweets)
+
+    if (resp.LastEvaluatedKey) {
+      return await loop(newAcc, resp.LastEvaluatedKey)
+    } else {
+      return newAcc
+    }
+  }
+
+  return await loop([])
+}
+
 async function distribute(tweets, userId) {
   const timelineEntries = tweets.map(tweet => ({
     PutRequest: {
@@ -76,32 +102,6 @@ async function distribute(tweets, userId) {
   })
 
   await Promise.all(promises)
-}
-
-async function getTimelineEntriesByDistributedFrom(userId, distributedFrom) {
-  const loop = async (acc, exclusiveStartKey) => {
-    const resp = await DocumentClient.query({
-      TableName: TIMELINES_TABLE,
-      KeyConditionExpression: 'userId = :userId and distributedFrom = :distributedFrom',
-      ExpressionAttributeValues: {
-        ':userId': userId,
-        ':distributedFrom': distributedFrom
-      },
-      IndexName: 'byDistributedFrom',
-      ExclusiveStartKey: exclusiveStartKey
-    }).promise()
-
-    const tweets = resp.Items || []
-    const newAcc = acc.concat(tweets)
-
-    if (resp.LastEvaluatedKey && newAcc.length < MaxTweets) {
-      return await loop(newAcc, resp.LastEvaluatedKey)
-    } else {
-      return newAcc
-    }
-  }
-
-  return await loop([])
 }
 
 async function undistribute(tweets, userId) {
