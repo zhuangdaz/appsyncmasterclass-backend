@@ -51,6 +51,24 @@ describe("Given authenticated users, userA and userB", () => {
       expect(followedBy).toBe(true)
     })
 
+    it("userA should see he is in userB's follower list", async () => {
+      const { profiles } = await when.a_user_calls_getFollowers(userA, userB.username, 25)
+      expect(profiles).toHaveLength(1)
+      expect(profiles[0].id).toEqual(userA.username)
+      expect(profiles[0]).not.toHaveProperty("following")
+      expect(profiles[0]).not.toHaveProperty("followedBy")
+    })
+
+    it("userB should also see userA is in his follower list", async () => {
+      const { profiles } = await when.a_user_calls_getFollowers(userB, userB.username, 25)
+      expect(profiles).toHaveLength(1)
+      expect(profiles[0]).toMatchObject({
+        id: userA.username,
+        following: false,
+        followedBy: true
+      })
+    })
+
     describe("UserB sends a tweet", () => {
       let tweet
       const text = chance.string({ length: 16 })

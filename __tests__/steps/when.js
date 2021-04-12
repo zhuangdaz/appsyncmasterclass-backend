@@ -324,6 +324,27 @@ const a_user_calls_getProfile = async (user, screenName) => {
     return data.getProfile
 }
 
+const a_user_calls_getFollowers = async (user, userId, limit, nextToken) => {
+    const getFollowers = `query MyQuery($userId: ID!, $limit: Int!, $nextToken: String) {
+        getFollowers(userId: $userId, limit: $limit, nextToken: $nextToken) {
+            profiles {
+                ... iProfileFields
+            }
+            nextToken
+        }
+    }`
+
+    const variables = {
+        userId,
+        limit,
+        nextToken
+    }
+
+    const data = await GraphQL(process.env.API_URL, getFollowers, variables, user.accessToken)
+    console.log(`[${user.username}] - getFollowers for :[${userId}]`)
+    return data.getFollowers
+}
+
 const a_user_calls_unretweet = async (user, tweetId) => {
     const unretweet = `mutation MyMutation($tweetId: ID!) {
         unretweet(tweetId: $tweetId)
@@ -595,5 +616,6 @@ module.exports = {
     a_user_calls_reply,
     a_user_calls_follow,
     a_user_calls_unfollow,
-    a_user_calls_getProfile
+    a_user_calls_getProfile,
+    a_user_calls_getFollowers
 }
