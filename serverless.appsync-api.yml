@@ -134,7 +134,7 @@ mappingTemplates:
 functionConfigurations:
   - name: getFollowers
     dataSource: relationshipsTable
-  - name: hydrateFollower
+  - name: hydrateFollowers
     dataSource: usersTable
     
 dataSources:
