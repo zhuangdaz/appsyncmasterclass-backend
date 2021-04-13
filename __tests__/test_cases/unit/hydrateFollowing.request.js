@@ -14,7 +14,7 @@ describe('hydrateFollowing.request template', () => {
     const context = given.an_appsync_context({}, {}, {}, {}, {}, prev)
     const result = when.we_invoke_an_appSync_template(templatePath, context)
     
-    expect(result).toEqual([])
+    expect(result).toEqual({ profiles: [] })
   })
 
   it("should convert relationships to BatchGetItem key", () => {
