@@ -7,9 +7,9 @@
   "scripts": {
     "sls": "sls",
     "exportEnv": "sls export-env && sls manifest",
-    "integration-test": "jest --verbose ./__tests__/test_cases/integration/distribute-tweets-to-follower.tests.js",
-    "unit-test": "jest --verbose ./__tests__/test_cases/unit --silent",
-    "e2e-test": "jest --verbose ./__tests__/test_cases/e2e/following.js"
+    "integration-test": "jest --verbose ./__tests__/test_cases/integration --silent",
+    "test": "jest --verbose ./__tests__/test_cases/unit --silent",
+    "e2e-test": "jest --verbose ./__tests__/test_cases/e2e --silent"
   },
   "repository": {
     "type": "git",
