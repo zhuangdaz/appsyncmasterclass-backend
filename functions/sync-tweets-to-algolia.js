@@ -1,10 +1,13 @@
 const DynamoDB = require('aws-sdk/clients/dynamodb')
-const { STAGE, ALGOLIA_APP_ID, ALGOLIA_WRITE_KEY } = process.env
+const middy = require('@middy/core')
+const ssm = require('@middy/ssm')
+
+const { STAGE } = process.env
 const { initTweetsIndex } = require('../lib/algolia')
 const { TweetTypes } = require('../lib/constants')
 
-module.exports.handler = async(event) => {
-  const index = await initTweetsIndex(ALGOLIA_APP_ID, ALGOLIA_WRITE_KEY, STAGE)
+module.exports.handler = middy(async (event, context) => {
+  const index = await initTweetsIndex(context.ALGOLIA_APP_ID, context.ALGOLIA_WRITE_KEY, STAGE)
 
   for (const record of event.Records) {
     if (record.eventName === "INSERT" || record.eventName === "MODIFY") {
@@ -14,7 +17,7 @@ module.exports.handler = async(event) => {
         continue
       }
       
-      tweet.objectId = tweet.id
+      tweet.objectID = tweet.id
       
       await index.saveObjects([tweet])
     } else if (record.eventName === "REMOVE") {
@@ -27,4 +30,13 @@ module.exports.handler = async(event) => {
       await index.deleteObjects([tweet.id])
     }
   }
-}
+}).use(ssm({
+  fetchData: {
+    ALGOLIA_APP_ID: `/${STAGE}/algolia-app-id`,
+    ALGOLIA_WRITE_KEY: `/${STAGE}/algolia-admin-key`
+  },
+  setToContext: true,
+  cacheExpiry: 5 * 60 * 1000 // 5 mins
+})).onError(async (request) => {
+  throw request.error
+})
