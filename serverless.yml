@@ -182,6 +182,26 @@ functions:
           - !Sub "${TimelinesTable.Arn}/index/byDistributedFrom"
           - !Sub "${TweetsTable.Arn}/index/byCreator"
 
+  syncUsersToAlgolia:
+    handler: functions/sync-users-to-algolia.handler
+    events:
+      - stream:
+          type: dynamodb
+          arn: !GetAtt UsersTable.StreamArn
+    environment:
+      ALGOLIA_APP_ID: xxx
+      ALGOLIA_WRITE_KEY: xxx
+  
+  syncTweetsToAlgolia:
+    handler: functions/sync-tweets-to-algolia.handler
+    events:
+      - stream:
+          type: dynamodb
+          arn: !GetAtt TweetsTable.StreamArn
+    environment:
+      ALGOLIA_APP_ID: xxx
+      ALGOLIA_WRITE_KEY: xxx
+
 resources:
   Resources:
     UsersTable:
@@ -203,6 +223,8 @@ resources:
                 KeyType: HASH
             Projection:
                 ProjectionType: ALL
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
         Tags:
           - Key: Environment
             Value: ${self:custom.stage}
