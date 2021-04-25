@@ -366,6 +366,40 @@ const a_user_calls_getFollowing = async (user, userId, limit, nextToken) => {
     return data.getFollowing
 }
 
+const a_user_calls_search = async (user, mode, query, limit, nextToken) => {
+    const search = `query MyQuery($query: String!, $mode:SearchMode!, $limit: Int!, $nextToken: String) {
+        search(query: $query, mode: $mode, limit: $limit, nextToken: $nextToken) {
+            results {
+                __typename
+                ... on MyProfile {
+                    ... myProfileFields
+                }
+                ... on OtherProfile {
+                    ... otherProfileFields
+                }
+                ... on Tweet {
+                    ... tweetFields
+                }
+                ... on Reply {
+                    ... replyFields
+                }
+            }
+            nextToken
+        }
+    }`
+
+    const variables = {
+        query,
+        mode,
+        limit,
+        nextToken
+    }
+
+    const data = await GraphQL(process.env.API_URL, search, variables, user.accessToken)
+    console.log(`[${user.username}] - search for "${query}"`)
+    return data.search
+}
+
 const a_user_calls_unretweet = async (user, tweetId) => {
     const unretweet = `mutation MyMutation($tweetId: ID!) {
         unretweet(tweetId: $tweetId)
@@ -639,5 +673,6 @@ module.exports = {
     a_user_calls_unfollow,
     a_user_calls_getProfile,
     a_user_calls_getFollowers,
-    a_user_calls_getFollowing
+    a_user_calls_getFollowing,
+    a_user_calls_search
 }
