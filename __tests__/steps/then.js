@@ -3,6 +3,7 @@ const _ = require('lodash')
 const AWS = require('aws-sdk')
 const http = require('axios')
 const fs = require('fs')
+const retry = require('async-retry')
 
 const user_exists_in_UsersTable = async (id) => {
   const DynamoDB = new AWS.DynamoDB.DocumentClient()
@@ -78,24 +79,26 @@ const retweet_exists_in_TweetsTable = async (userId, tweetId) => {
 }
 
 const reply_exists_in_TweetsTable = async (userId, tweetId) => {
-  const DynamoDB = new AWS.DynamoDB.DocumentClient()
-  console.log(`Looking for reply by [${userId}] to  [${tweetId}] in table [${process.env.TWEETS_TABLE}]`)
-  const resp = await DynamoDB.query({
-    TableName: process.env.TWEETS_TABLE,
-    IndexName: 'repliesForTweet',
-    KeyConditionExpression: 'inReplyToTweetId = :tweetId',
-    ExpressionAttributeValues: {
-      ':tweetId': tweetId,
-      ':userId': userId
-    },
-    FilterExpression: 'creator = :userId'
-  }).promise()
+  await retry(async () => {
+    const DynamoDB = new AWS.DynamoDB.DocumentClient()
+    const resp = await DynamoDB.query({
+      TableName: process.env.TWEETS_TABLE,
+      IndexName: 'repliesForTweet',
+      KeyConditionExpression: 'inReplyToTweetId = :tweetId',
+      ExpressionAttributeValues: {
+        ':tweetId': tweetId,
+        ':userId': userId
+      },
+      FilterExpression: 'creator = :userId'
+    }).promise()
 
-  const reply = _.get(resp, 'Items.0')
-
-  expect(reply).toBeTruthy()
-
-  return reply
+    const reply = _.get(resp, 'Items.0')
+    expect(reply).toBeTruthy()
+    return reply
+  }, {
+    retries: 5,
+    maxTimeout: 1000
+  })
 }
 
 const retweet_exists_in_RetweetsTable = async (userId, tweetId) => {
