@@ -33,7 +33,7 @@ async function searchPeople(context, query, limit, nextToken, userId) {
     hitsPerPage: limit,
     page: 0
   }
-  console.log(`searchParams: ${searchParams}`)
+
   const { hits, page, nbPages } = await index.search(query, searchParams)
   hits.forEach(x => {
     x.__typename = x.id === userId ? 'MyProfile' : 'OtherProfile'
@@ -87,9 +87,9 @@ function parseNextToken(nextToken) {
   if (!nextToken) {
     return null
   }
-  console.log("Parsing nextToken...")
-  const searchParams = Buffer.from(nextToken, 'base64').toJSON()
-  console.log(`Parsed nextToken as ${searchParams}`)
+  const token = Buffer.from(nextToken, 'base64').toString()
+  const searchParams = JSON.parse(token)
   delete searchParams.random
+
   return searchParams
 }
