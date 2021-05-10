@@ -60,7 +60,7 @@ async function searchLatest(context, hashTag, limit, nextToken) {
     hitsPerPage: limit,
     page: 0
   }
-  const { hits, page, nbPages } = await index.search(query, searchParams)
+  const { hits, page, nbPages } = await index.search("", searchParams)
 
   let nextSearchParams
   if (page + 1 >= nbPages) {
