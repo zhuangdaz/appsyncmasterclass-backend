@@ -1,7 +1,7 @@
 const middy = require('@middy/core')
 const ssm = require('@middy/ssm')
 const chance = require('chance').Chance()
-const { SearchModes } = require('../lib/constants')
+const { HashTagModes } = require('../lib/constants')
 const { STAGE } = process.env
 const { initUsersIndex, initTweetsIndex } = require('../lib/algolia')
 
@@ -9,9 +9,9 @@ module.exports.handler = middy(async (event, context) => {
   const userId = event.identity.username
   const { hashTag, mode, limit, nextToken } = event.arguments
   switch (mode) {
-    case SearchModes.LATEST:
+    case HashTagModes.LATEST:
       return await searchLatest(context, hashTag, limit, nextToken)
-    case SearchModes.PEOPLE:
+    case HashTagModes.PEOPLE:
       return await searchPeople(context, hashTag, limit, nextToken, userId)      
     default:
       throw new Error("Only 'People' and 'Latest' modes are supported for now");

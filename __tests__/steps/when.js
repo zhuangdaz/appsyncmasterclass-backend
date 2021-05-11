@@ -400,6 +400,40 @@ const a_user_calls_search = async (user, mode, query, limit, nextToken) => {
     return data.search
 }
 
+const a_user_calls_getHashTag = async (user, mode, hashTag, limit, nextToken) => {
+    const getHashTag = `query MyQuery($hashTag: String!, $mode:HashTagMode!, $limit: Int!, $nextToken: String) {
+        getHashTag(hashTag: $hashTag, mode: $mode, limit: $limit, nextToken: $nextToken) {
+            results {
+                __typename
+                ... on MyProfile {
+                    ... myProfileFields
+                }
+                ... on OtherProfile {
+                    ... otherProfileFields
+                }
+                ... on Tweet {
+                    ... tweetFields
+                }
+                ... on Reply {
+                    ... replyFields
+                }
+            }
+            nextToken
+        }
+    }`
+
+    const variables = {
+        hashTag,
+        mode,
+        limit,
+        nextToken
+    }
+
+    const data = await GraphQL(process.env.API_URL, getHashTag, variables, user.accessToken)
+    console.log(`[${user.username}] - got "${hashTag}"`)
+    return data.getHashTag
+}
+
 const a_user_calls_unretweet = async (user, tweetId) => {
     const unretweet = `mutation MyMutation($tweetId: ID!) {
         unretweet(tweetId: $tweetId)
@@ -674,5 +708,6 @@ module.exports = {
     a_user_calls_getProfile,
     a_user_calls_getFollowers,
     a_user_calls_getFollowing,
-    a_user_calls_search
+    a_user_calls_search,
+    a_user_calls_getHashTag
 }
