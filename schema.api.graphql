@@ -1,6 +1,7 @@
 schema {
     query: Query
     mutation: Mutation
+    subscription: Subscription
 }
 
 type Query {
@@ -53,6 +54,46 @@ type Mutation {
     follow(userId: ID!): Boolean!
 
     unfollow(userId: ID!): Boolean!
+
+    notifyRetweeted(
+        id: ID!
+        userId: ID!
+        tweetId: ID!
+        retweetBy: ID!
+        retweetId: ID!
+    ): Notification!
+    @aws_iam
+    
+    notifyReplied(
+        id: ID!
+        userId: ID!
+        tweetId: ID!
+        repliedBy: ID!
+        replyTweetId: ID!
+    ): Notification!
+    @aws_iam
+    
+    notifyLiked(
+        id: ID!
+        userId: ID!
+        tweetId: ID!
+        likedBy: ID!
+    ): Notification!
+    @aws_iam
+
+    notifyMentioned(
+        id: ID!
+        userId: ID!
+        tweetId: ID!
+        mentionedBy: ID!
+        mentionedByTweetId: ID!
+    ): Notification!
+    @aws_iam
+}
+
+type Subscription {
+    onNotified(userId: ID!, type: NotificationType): Notification
+    @aws_subscribe(mutations: ["notifyRetweeted", "notifyReplied", "notifyLiked", "notifyMentioned"])
 }
 
 enum SearchMode {
@@ -204,3 +245,51 @@ type HashTagResultsPage {
     results: [HashTagResult!]
     nextToken: String
 }
+
+type Retweeted @aws_iam @aws_cognito_user_pools {
+    id: ID!
+    userId: ID!
+    tweetId: ID!
+    retweetBy: ID!
+    retweetId: ID!
+    createdAt: AWSDateTime!
+    type: NotificationType!
+}
+
+type Replied @aws_iam @aws_cognito_user_pools {
+    id: ID!
+    userId: ID!
+    tweetId: ID!
+    repliedBy: ID!
+    replyTweetId: ID!
+    createdAt: AWSDateTime!
+    type: NotificationType!
+}
+
+type Liked @aws_iam @aws_cognito_user_pools {
+    id: ID!
+    userId: ID!
+    tweetId: ID!
+    likedBy: ID!
+    createdAt: AWSDateTime!
+    type: NotificationType!
+}
+
+type Mentioned @aws_iam @aws_cognito_user_pools {
+    id: ID!
+    userId: ID!
+    tweetId: ID!
+    mentionedBy: ID!
+    mentionedByTweetId: ID!
+    createdAt: AWSDateTime!
+    type: NotificationType!
+}
+
+union Notification = Retweeted | Replied | Liked | Mentioned
+
+enum NotificationType {
+  Retweeted
+  Liked
+  Mentioned
+  Replied
+} 
