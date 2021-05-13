@@ -1,0 +1,16 @@
+{
+    "version" : "2018-05-29",
+    "operation" : "PutItem",
+    "key": {
+        "id" : $util.dynamodb.toDynamoDBJson($context.arguments.id),
+        "userId" : $util.dynamodb.toDynamoDBJson($context.arguments.userId)
+    },
+    "attributeValues" : {
+        "tweetId" : $util.dynamodb.toDynamoDBJson($context.arguments.userId),
+        "retweetBy" : $util.dynamodb.toDynamoDBJson($context.arguments.retweetBy),
+        "retweetId" : $util.dynamodb.toDynamoDBJson($context.arguments.retweetId),
+        "createdAt" : $util.dynamodb.toDynamoDBJson($util.time.nowISO8601()),
+        "type": $util.dynamodb.toDynamoDBJson("Retweeted"),
+        "__typename": $util.dynamodb.toDynamoDBJson("Retweeted")
+    }
+}

@@ -182,6 +182,23 @@ functions:
           - !Sub "${TimelinesTable.Arn}/index/byDistributedFrom"
           - !Sub "${TweetsTable.Arn}/index/byCreator"
 
+  notify:
+    handler: functions/notify.handler
+    environment:
+      TWEETS_TABLE: !Ref TweetsTable
+      GRAPHQL_API_URL: !GetAtt AppsyncmasterclassGraphQlApi.GraphQLUrl
+    events:
+      - stream:
+          type: dynamodb
+          arn: !GetAtt TweetsTable.StreamArn
+    iamRoleStatements:
+      - Effect: Allow
+        Action: appsync:GraphQL
+        Resource: !Sub ${AppsyncmasterclassGraphQlApi.Arn}/*
+      - Effect: Allow
+        Action: dynamodb:GetItem
+        Resource: !GetAtt TweetsTable.Arn
+
   syncUsersToAlgolia:
     handler: functions/sync-users-to-algolia.handler
     events:
@@ -407,6 +424,35 @@ resources:
             Value: ${self:custom.stage}
           - Key: Name
             Value: relationships-table
+
+    NotificationsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        BillingMode: PAY_PER_REQUEST
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+          - AttributeName: userId
+            KeyType: RANGE
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: id
+            AttributeType: S
+        GlobalSecondaryIndexes:
+          - IndexName: byUserId
+            KeySchema:
+              - AttributeName: userId
+                KeyType: HASH
+              - AttributeName: id
+                KeyType: RANGE
+            Projection:
+                ProjectionType: ALL
+        Tags:
+          - Key: Environment
+            Value: ${self:custom.stage}
+          - Key: Name
+            Value: notifications-table
 
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
