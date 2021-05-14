@@ -6,6 +6,7 @@ plugins:
    - serverless-iam-roles-per-function
    - serverless-export-env
    - serverless-manifest-plugin
+   - serverless-layers
 
 provider:
   name: aws
@@ -25,12 +26,9 @@ custom:
   stage: ${opt:stage, self:provider.stage}
   appSync:
     - ${file(serverless.appsync-api.yml)}
-
-  manifest:
-    postProcess: ./processManifest.js
-    disablePostDeployGeneration: true
-    disableOutput: true
-    silent: true
+  
+  serverless-layers:
+    layersDeploymentBucket: ${ssm:/${self:custom.stage}/layer-deployment-bucket}
 
 functions:
   confirmUserSignup:
