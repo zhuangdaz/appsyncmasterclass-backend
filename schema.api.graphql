@@ -278,7 +278,6 @@ type Liked @aws_iam @aws_cognito_user_pools {
 type Mentioned @aws_iam @aws_cognito_user_pools {
     id: ID!
     userId: ID!
-    tweetId: ID!
     mentionedBy: ID!
     mentionedByTweetId: ID!
     createdAt: AWSDateTime!

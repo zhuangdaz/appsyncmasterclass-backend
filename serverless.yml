@@ -183,6 +183,7 @@ functions:
     handler: functions/notify.handler
     environment:
       TWEETS_TABLE: !Ref TweetsTable
+      USERS_TABLE: !Ref UsersTable
       GRAPHQL_API_URL: !GetAtt AppsyncmasterclassGraphQlApi.GraphQLUrl
     events:
       - stream:
@@ -195,6 +196,9 @@ functions:
       - Effect: Allow
         Action: dynamodb:GetItem
         Resource: !GetAtt TweetsTable.Arn
+      - Effect: Allow
+        Action: dynamodb:Query
+        Resource: !Sub ${UsersTable.Arn}/index/byScreenName
 
   notifyLiked:
     handler: functions/notify-liked.handler
