@@ -84,7 +84,6 @@ type Mutation {
     notifyMentioned(
         id: ID!
         userId: ID!
-        tweetId: ID!
         mentionedBy: ID!
         mentionedByTweetId: ID!
     ): Notification!
