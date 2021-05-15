@@ -15,6 +15,9 @@ module.exports.handler = async(event) => {
         case TweetTypes.RETWEET:
           await notifyRetweeted(tweet)
           break
+        case TweetTypes.REPLY:
+          await notifyReplied(tweet)
+          break
       }
 
       if (tweet.text) {
@@ -28,7 +31,6 @@ module.exports.handler = async(event) => {
 }
 
 async function notifyRetweeted(tweet) {
-  // call notifyRetweeted mutation
   const retweetOf = await getTweetById(tweet.retweetOf)
   await mutate(
     graphql `mutation notifyRetweeted(
@@ -65,6 +67,48 @@ async function notifyRetweeted(tweet) {
       retweetId: tweet.id
     }
   )
+}
+
+async function notifyReplied(tweet) {
+  const promises = tweet.inReplyToUserIds.map(async (userId) => {
+    await mutate(
+      graphql `mutation notifyReplied(
+        $id: ID!
+        $userId: ID!
+        $tweetId: ID!
+        $repliedBy: ID!
+        $replyTweetId: ID!
+      ) {
+        notifyReplied(
+          id: $id
+          userId: $userId
+          tweetId: $tweetId
+          repliedBy: $repliedBy
+          replyTweetId: $replyTweetId
+        ) {
+          __typename
+          ... on Replied {
+            id
+            userId
+            tweetId
+            repliedBy
+            replyTweetId
+            createdAt
+            type
+          }
+        }
+      }`,
+      {
+        id: ulid.ulid(),
+        userId,
+        tweetId: tweet.inReplyToTweetId,
+        repliedBy: tweet.creator,
+        replyTweetId: tweet.id
+      }
+    )
+  })
+  
+  await Promise.all(promises)
 }
 
 async function notifyMentioned(screenNames, tweet) {
