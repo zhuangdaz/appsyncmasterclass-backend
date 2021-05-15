@@ -70,8 +70,8 @@ async function notifyRetweeted(tweet) {
 }
 
 async function notifyReplied(tweet) {
-  const promises = tweet.inReplyToUserIds.map(async (userId) => {
-    await mutate(
+  const promises = tweet.inReplyToUserIds.map(userId => 
+    mutate(
       graphql `mutation notifyReplied(
         $id: ID!
         $userId: ID!
@@ -106,7 +106,7 @@ async function notifyReplied(tweet) {
         replyTweetId: tweet.id
       }
     )
-  })
+  )
   
   await Promise.all(promises)
 }
