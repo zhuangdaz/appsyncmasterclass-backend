@@ -540,4 +540,7 @@ resources:
     WebUserPoolClientId:
       Value: !Ref WebUserPoolClient
 
+    ApiUrl:
+      Value: !GetAtt AppsyncmasterclassGraphQlApi.GraphQLUrl
+
 

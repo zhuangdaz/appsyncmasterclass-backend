@@ -37,14 +37,14 @@ async function notifyRetweeted(tweet) {
       $id: ID!
       $userId: ID!
       $tweetId: ID!
-      $retweetBy: ID!
+      $retweetedBy: ID!
       $retweetId: ID!
     ) {
       notifyRetweeted(
         id: $id
         userId: $userId
         tweetId: $tweetId
-        retweetBy: $retweetBy
+        retweetedBy: $retweetedBy
         retweetId: $retweetId
       ) {
         __typename
@@ -52,7 +52,7 @@ async function notifyRetweeted(tweet) {
           id
           userId
           tweetId
-          retweetBy
+          retweetedBy
           retweetId
           createdAt
           type
@@ -63,7 +63,7 @@ async function notifyRetweeted(tweet) {
       id: ulid.ulid(),
       userId: retweetOf.creator,
       tweetId: retweetOf.id,
-      retweetBy: tweet.creator,
+      retweetedBy: tweet.creator,
       retweetId: tweet.id
     }
   )

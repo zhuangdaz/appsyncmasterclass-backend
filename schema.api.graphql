@@ -59,7 +59,7 @@ type Mutation {
         id: ID!
         userId: ID!
         tweetId: ID!
-        retweetBy: ID!
+        retweetedBy: ID!
         retweetId: ID!
     ): Notification!
     @aws_iam
@@ -249,8 +249,8 @@ type Retweeted @aws_iam @aws_cognito_user_pools {
     id: ID!
     userId: ID!
     tweetId: ID!
-    retweetBy: ID!
     retweetId: ID!
+    retweetedBy: ID!
     createdAt: AWSDateTime!
     type: NotificationType!
 }

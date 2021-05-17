@@ -10,7 +10,7 @@
     },
     "attributeValues" : {
         "tweetId" : $util.dynamodb.toDynamoDBJson($context.arguments.tweetId),
-        "retweetBy" : $util.dynamodb.toDynamoDBJson($context.arguments.retweetBy),
+        "retweetedBy" : $util.dynamodb.toDynamoDBJson($context.arguments.retweetedBy),
         "retweetId" : $util.dynamodb.toDynamoDBJson($context.arguments.retweetId),
         "createdAt" : $util.dynamodb.toDynamoDBJson($util.time.nowISO8601()),
         "type": $util.dynamodb.toDynamoDBJson("Retweeted"),
