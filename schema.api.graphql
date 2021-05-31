@@ -100,10 +100,10 @@ type Mutation {
     ): Notification!
     @aws_iam
 
-    sendDirectMessage{
+    sendDirectMessage(
         otherUserId: ID!
         message: String!
-    }: Conversation!
+    ): Conversation!
 }
 
 type Subscription {
