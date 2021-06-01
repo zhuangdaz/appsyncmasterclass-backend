@@ -1,0 +1,12 @@
+#if ($context.info.selectionSetList.size() == 1 && $context.info.selectionSetList[0] == "id")
+    #set ($result = { "id": "$context.source.creator" })
+    #return ($result)
+#end
+
+{
+    "version" : "2018-05-29",
+    "operation" : "GetItem",
+    "key" : {
+        "id" : $util.dynamodb.toDynamoDBJson($context.source.otherUserId)
+    }
+}

@@ -267,7 +267,7 @@ functions:
     handler: functions/send-direct-message.handler
     environment:
       CONVERSATIONS_TABLE: !Ref ConversationsTable
-      DIRECT_MESSAGE_TABLE: !Ref DirectMessagesTable
+      DIRECT_MESSAGES_TABLE: !Ref DirectMessagesTable
     iamRoleStatements:
       - Effect: Allow
         Action: dynamodb:UpdateItem

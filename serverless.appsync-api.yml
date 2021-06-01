@@ -170,7 +170,10 @@ mappingTemplates:
   - type: Reply
     field: inReplyToUsers
     dataSource: usersTable
-  
+  - type: Conversation
+    field: otherUser
+    dataSource: usersTable
+
 functionConfigurations:
   - name: getFollowers
     dataSource: relationshipsTable
