@@ -543,6 +543,22 @@ const we_invoke_tweet = async (username, text) => {
     return await handler(event, context)
 }
 
+const we_invoke_send_direct_message = async (username, message, otherUserId) => {
+    const handler = require('../../functions/send-direct-message').handler
+
+    const context = {}
+    const event = {
+        identity: {
+            username
+        },
+        arguments: {
+            message,
+            otherUserId
+        }
+    }
+    return await handler(event, context)
+}
+
 const we_invoke_retweet = async (username, tweetId) => {
     const handler = require('../../functions/retweet').handler
 
@@ -690,6 +706,7 @@ module.exports = {
     we_invoke_reply,
     we_invoke_distribute_tweets,
     we_invoke_distribute_tweets_to_follower,
+    we_invoke_send_direct_message,
     a_user_signs_up,
     a_user_calls_getMyProfile,
     a_user_calls_editMyProfile,

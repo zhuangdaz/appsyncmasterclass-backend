@@ -160,6 +160,37 @@ const tweet_exists_in_TimelinesTable = async (userId, tweetId) => {
   return resp.Item
 }
 
+const conversation_exists_in_ConversationsTable = async (userId, otherUserId) => {
+  const DynamoDB = new AWS.DynamoDB.DocumentClient()
+  const resp = await DynamoDB.get({
+    TableName: process.env.CONVERSATIONS_TABLE,
+    Key: {
+      userId,
+      otherUserId
+    }
+  }).promise()
+
+  expect(resp.Item).toBeTruthy()
+
+  return resp.Item
+}
+
+const there_are_N_messages_in_DirectMessagesTable = async (conversationId, n) => {
+  const DynamoDB = new AWS.DynamoDB.DocumentClient()
+  const resp = await DynamoDB.query({
+    TableName: process.env.DIRECT_MESSAGES_TABLE,
+    KeyConditionExpression: 'conversationId = :conversationId',
+    ExpressionAttributeValues: {
+      ':conversationId': conversationId
+    },
+    ScanIndexForward: false   // reverse the index order so that later message shows up first
+  }).promise()
+
+  expect(resp.Items).toHaveLength(n)
+
+  return resp.Items
+}
+
 const tweet_does_not_exist_in_TimelinesTable = async (userId, tweetId) => {
   const DynamoDB = new AWS.DynamoDB.DocumentClient()
   console.log(`Looking for tweet [${tweetId}] for user [${userId}] in table [${process.env.TIMELINES_TABLE}]`)
@@ -211,6 +242,8 @@ module.exports = {
   user_can_download_image_from_url,
   tweet_exists_in_TweetsTable,
   tweet_exists_in_TimelinesTable,
+  conversation_exists_in_ConversationsTable,
+  there_are_N_messages_in_DirectMessagesTable,
   tweet_does_not_exist_in_TimelinesTable,
   tweetsCount_is_updated_in_UsersTable,
   retweet_exists_in_TweetsTable,
