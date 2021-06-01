@@ -35,7 +35,7 @@ type Query {
         nextToken: String
     ): HashTagResultsPage!
 
-    listConverstations(
+    listConversations(
         limit: Int!,
         nextToken: String
     ): ConversationsPage!
