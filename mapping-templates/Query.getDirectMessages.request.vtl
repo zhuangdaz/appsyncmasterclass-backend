@@ -5,7 +5,7 @@ $util.validate($isValidLimit, "Max limit is 25")
 #set ($otherUserId = $context.arguments.otherUserId)
 
 #if ($userId.compareTo($otherUserId) < 0)
-    #set ($conversationId = $userId + '_' + $otherUserId
+    #set ($conversationId = $userId + '_' + $otherUserId)
 #else
     #set ($conversationId = $otherUserId + '_' + $userId)
 #end

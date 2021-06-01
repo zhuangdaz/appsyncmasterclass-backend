@@ -329,5 +329,5 @@ type Message {
     id: ID!
     from: IProfile!
     message: String!
-    timestamp: AWSDateTime!
+    createdAt: AWSDateTime!
 }
