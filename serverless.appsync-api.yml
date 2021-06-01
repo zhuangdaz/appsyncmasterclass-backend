@@ -61,6 +61,9 @@ mappingTemplates:
   - type: Query
     field: listConversations
     dataSource: conversationsTable
+  - type: Query
+    field: getDirectMessages
+    dataSource: directMessagesTable
 
   - type: Mutation
     field: editMyProfile
@@ -118,6 +121,9 @@ mappingTemplates:
   # Nested fields
   - type: Tweet
     field: profile
+    dataSource: usersTable
+  - type: Message
+    field: from
     dataSource: usersTable
   - type: Retweet
     field: profile
