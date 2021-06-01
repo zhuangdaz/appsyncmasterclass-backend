@@ -463,6 +463,25 @@ const a_user_calls_sendDirectMessage = async (user, otherUserId, message) => {
     return data.sendDirectMessage
 }
 
+const a_user_calls_listConversations = async (user, limit) => {
+    const listConversations = `query MyQuery($limit: Int!) {
+        listConversations(limit: $limit) {
+            conversations {
+                ... conversationFields
+            }
+            nextToken
+        }
+    }`
+
+    const variables = {
+        limit
+    }
+
+    const data = await GraphQL(process.env.API_URL, listConversations, variables, user.accessToken)
+    console.log(`[${user.username}] - got conversations`)
+    return data.listConversations
+}
+
 const a_user_calls_unretweet = async (user, tweetId) => {
     const unretweet = `mutation MyMutation($tweetId: ID!) {
         unretweet(tweetId: $tweetId)
@@ -756,5 +775,6 @@ module.exports = {
     a_user_calls_getFollowing,
     a_user_calls_search,
     a_user_calls_getHashTag,
-    a_user_calls_sendDirectMessage
+    a_user_calls_sendDirectMessage,
+    a_user_calls_listConversations
 }
