@@ -274,9 +274,7 @@ functions:
         Resource: !GetAtt ConversationsTable.Arn
       - Effect: Allow
         Action: dynamodb:PutItem
-        Resource: 
-          - !GetAtt DirectMessagesTable.Arn
-          - !GetAtt ConversationsTable.Arn
+        Resource: !GetAtt DirectMessagesTable.Arn
 
 resources:
   Resources:

@@ -7,7 +7,7 @@ const { CONVERSATIONS_TABLE, DIRECT_MESSAGES_TABLE } = process.env
 module.exports.handler = async(event) => {
   const { otherUserId, message } = event.arguments
   const { username } = event.identity
-  const id = ulid.ulid()
+  const messageId = ulid.ulid()
   const timestamp = new Date().toJSON()
   const conversationId = username < otherUserId
     ? `${username}_${otherUserId}`
@@ -15,7 +15,7 @@ module.exports.handler = async(event) => {
 
   const newMessage = {
     conversationId,
-    id,
+    messageId,
     message,
     from: username,
     createdAt: timestamp
