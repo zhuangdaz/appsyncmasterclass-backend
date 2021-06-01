@@ -133,6 +133,17 @@ fragment iTweetFields on ITweet {
 }
 `
 
+const conversationFragment = `
+fragment conversationFields on Conversation {
+    id
+    lastMessage
+    lastModified
+    otherUser {
+        ... otherProfileFields
+    }
+}
+`
+
 registerFragment("myProfileFields", myProfileFragment)
 registerFragment("otherProfileFields", otherProfileFragment)
 registerFragment("iProfileFields", iProfileFragment)
@@ -140,6 +151,7 @@ registerFragment("tweetFields", tweetFragment)
 registerFragment("retweetFields", retweetFragment)
 registerFragment("replyFields", replyFragment)
 registerFragment("iTweetFields", iTweetFragment)
+registerFragment("conversationFields", conversationFragment)
 
 const we_invoke_confirmUserSignup = async (userName, name, email) => {
     const handler = require('../../functions/confirm-user-signup').handler
@@ -434,6 +446,23 @@ const a_user_calls_getHashTag = async (user, mode, hashTag, limit, nextToken) =>
     return data.getHashTag
 }
 
+const a_user_calls_sendDirectMessage = async (user, otherUserId, message) => {
+    const sendDirectMessage = `mutation MyMutation($otherUserId: ID!, $message: String!) {
+        sendDirectMessage(otherUserId: $otherUserId, message: $message) {
+            ... conversationFields
+        }
+    }`
+
+    const variables = {
+        otherUserId,
+        message
+    }
+
+    const data = await GraphQL(process.env.API_URL, sendDirectMessage, variables, user.accessToken)
+    console.log(`[${user.username}] - sent DM to [${otherUserId}]`)
+    return data.sendDirectMessage
+}
+
 const a_user_calls_unretweet = async (user, tweetId) => {
     const unretweet = `mutation MyMutation($tweetId: ID!) {
         unretweet(tweetId: $tweetId)
@@ -726,5 +755,6 @@ module.exports = {
     a_user_calls_getFollowers,
     a_user_calls_getFollowing,
     a_user_calls_search,
-    a_user_calls_getHashTag
+    a_user_calls_getHashTag,
+    a_user_calls_sendDirectMessage
 }
