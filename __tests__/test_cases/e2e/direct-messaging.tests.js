@@ -18,7 +18,7 @@ describe("Given two authenticated users", () => {
       conversation = await when.a_user_calls_sendDirectMessage(userA, userB.username, text)
     })
 
-    it("Their last message should be updated", () => {
+    it("The last message in their conversation should be updated", () => {
       expect(conversation.lastMessage).toEqual(text)
     })
 
@@ -43,7 +43,31 @@ describe("Given two authenticated users", () => {
       })
     })
 
-    describe("When userB sends a DM to userA", () => {
+    it("UserA should retrieve the message when calling getDirectMessages", async () => {
+      const { messages, nextToken } = await when.a_user_calls_getDirectMessages(userA, userB.username, 10)
+      expect(nextToken).toBeNull()
+      expect(messages).toHaveLength(1)
+      expect(messages[0]).toMatchObject({
+        message: text,
+        from: {
+          id: userA.username
+        }
+      })
+    })
+
+    it("UserB should retrieve the message when calling getDirectMessages", async () => {
+      const { messages, nextToken } = await when.a_user_calls_getDirectMessages(userB, userA.username, 10)
+      expect(nextToken).toBeNull()
+      expect(messages).toHaveLength(1)
+      expect(messages[0]).toMatchObject({
+        message: text,
+        from: {
+          id: userA.username
+        }
+      })
+    })
+
+    describe("When userB sends a DM back to userA", () => {
       let conversation2
       const text2 = chance.string( { length: 16 })
 
@@ -78,6 +102,30 @@ describe("Given two authenticated users", () => {
           },
           lastMessage: conversation2.lastMessage,
           lastModified: conversation2.lastModified
+        })
+      })
+
+      it("UserA should retrieve the new message when calling getDirectMessages", async () => {
+        const { messages, nextToken } = await when.a_user_calls_getDirectMessages(userA, userB.username, 10)
+        expect(nextToken).toBeNull()
+        expect(messages).toHaveLength(2)
+        expect(messages[0]).toMatchObject({
+          message: text2,
+          from: {
+            id: userB.username
+          }
+        })
+      })
+
+      it("UserB should retrieve the new message when calling getDirectMessages", async () => {
+        const { messages, nextToken } = await when.a_user_calls_getDirectMessages(userB, userA.username, 10)
+        expect(nextToken).toBeNull()
+        expect(messages).toHaveLength(2)
+        expect(messages[0]).toMatchObject({
+          message: text2,
+          from: {
+            id: userB.username
+          }
         })
       })
     })

@@ -326,7 +326,7 @@ type MessagesPage {
 }
 
 type Message {
-    id: ID!
+    messageId: ID!
     from: IProfile!
     message: String!
     createdAt: AWSDateTime!
