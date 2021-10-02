@@ -10,7 +10,7 @@
     "jest": "jest",
     "integration-test": "jest --verbose ./__tests__/test_cases/integration --silent",
     "test": "jest --verbose ./__tests__/test_cases/unit --silent",
-    "e2e-test": "jest --verbose ./__tests__/test_cases/e2e --silent --detectOpenHandles"
+    "e2e-test": "jest --verbose ./__tests__/test_cases/e2e --silent"
   },
   "repository": {
     "type": "git",
