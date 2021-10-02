@@ -219,6 +219,19 @@ functions:
         Action: dynamodb:GetItem
         Resource: !GetAtt TweetsTable.Arn
 
+  notifyDmed:
+    handler: functions/notify-dmed.handler
+    environment:
+      GRAPHQL_API_URL: !GetAtt AppsyncmasterclassGraphQlApi.GraphQLUrl
+    events:
+      - stream:
+          type: dynamodb
+          arn: !GetAtt DirectMessagesTable.StreamArn
+    iamRoleStatements:
+      - Effect: Allow
+        Action: appsync:GraphQL
+        Resource: !Sub ${AppsyncmasterclassGraphQlApi.Arn}/*
+
   syncUsersToAlgolia:
     handler: functions/sync-users-to-algolia.handler
     events:

@@ -1,0 +1,18 @@
+{
+    "version" : "2018-05-29",
+    "operation" : "PutItem",
+    "key": {
+        "id" : $util.dynamodb.toDynamoDBJson($context.arguments.id),
+        "userId" : $util.dynamodb.toDynamoDBJson($context.arguments.userId)
+    },
+    "condition": {
+        "expression": "attribute_not_exists(userId)"
+    },
+    "attributeValues" : {
+        "otherUserId" : $util.dynamodb.toDynamoDBJson($context.arguments.otherUserId),
+        "message" : $util.dynamodb.toDynamoDBJson($context.arguments.message),
+        "createdAt" : $util.dynamodb.toDynamoDBJson($util.time.nowISO8601()),
+        "type": $util.dynamodb.toDynamoDBJson("DMed"),
+        "__typename": $util.dynamodb.toDynamoDBJson("DMed")
+    }
+}
